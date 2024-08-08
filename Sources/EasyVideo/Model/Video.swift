@@ -11,7 +11,7 @@ import CoreMedia
 public class Video: Identifiable {
     public let id = 3496
     let url: URL
-    let name = "foo"
+    let title: String?
     let duration = 60
     let startTime: CMTimeValue = 0
     let yearOfRelease = 2023
@@ -20,8 +20,9 @@ public class Video: Identifiable {
     let contentRating = "XXX"
     let genres: [Genre] = [Genre()]
     
-    public init(url: URL) {
+    public init(url: URL, title: String? = nil) {
         self.url = url
+        self.title = title
     }
 }
 
@@ -49,7 +50,7 @@ public extension Video {
     }
     
     var localizedName: String {
-        String(localized: LocalizedStringResource(stringLiteral: self.name))
+        String(localized: LocalizedStringResource(stringLiteral: self.title ?? ""))
     }
     
     var localizedSynopsis: String {
