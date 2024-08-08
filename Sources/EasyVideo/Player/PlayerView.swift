@@ -8,7 +8,7 @@ A view that presents the video player.
 import SwiftUI
 
 /// Constants that define the style of controls a player presents.
-enum PlayerControlsStyle {
+public enum PlayerControlsStyle {
     /// The player uses the system interface that AVPlayerViewController provides.
     case system
     /// The player uses compact controls that display a play/pause button.
@@ -18,7 +18,7 @@ enum PlayerControlsStyle {
 }
 
 /// A view that presents the video player.
-struct PlayerView: View {
+public struct PlayerView: View {
     
     static let identifier = "player-view"
     
@@ -27,7 +27,7 @@ struct PlayerView: View {
     @Environment(PlayerModel.self) private var model
     
     /// Creates a new player view.
-    init(controlsStyle: PlayerControlsStyle = .system) {
+    public init(controlsStyle: PlayerControlsStyle = .system) {
         self.controlsStyle = controlsStyle
     }
 
@@ -46,7 +46,7 @@ struct PlayerView: View {
         #endif
     }
 
-    var body: some View {
+    public var body: some View {
         switch controlsStyle {
         case .system:
             systemPlayerView

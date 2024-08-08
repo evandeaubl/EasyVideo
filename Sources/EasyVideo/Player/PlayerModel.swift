@@ -9,7 +9,7 @@ import AVKit
 import GroupActivities
 
 /// The presentation modes the player supports.
-enum Presentation {
+public enum Presentation {
     /// Presents the player as a child of a parent user interface.
     case inline
     /// Presents the player in full-window exclusive mode.
@@ -17,7 +17,7 @@ enum Presentation {
 }
 
 /// A model object that manages the playback of video.
-@MainActor @Observable class PlayerModel {
+@MainActor @Observable public class PlayerModel {
     
     /// A Boolean value that indicates whether playback is currently active.
     private(set) var isPlaying = false
@@ -62,7 +62,7 @@ enum Presentation {
     
     private var playerObservationToken: NSKeyValueObservation?
     
-    init() {
+    public init() {
         let player = AVQueuePlayer()
         
         self.coordinator = WatchingCoordinator(
@@ -231,7 +231,7 @@ enum Presentation {
     ///   - video: The video to load for playback.
     ///   - presentation: The style in which to present the player.
     ///   - autoplay: A Boolean value that indicates whether to automatically play the content when presented.
-    func loadVideo(_ video: Video, presentation: Presentation = .inline, autoplay: Bool = true, loop: Bool = false) {
+    public func loadVideo(_ video: Video, presentation: Presentation = .inline, autoplay: Bool = true, loop: Bool = false) {
         // Update the model state for the request.
         currentItem = video
         shouldAutoPlay = autoplay
@@ -275,7 +275,7 @@ enum Presentation {
     }
     
     /// Clears any loaded media and resets the player model to its default state.
-    func reset() {
+    public func reset() {
         currentItem = nil
         looper = nil
         player.isMuted = false
@@ -341,23 +341,23 @@ enum Presentation {
 
     // MARK: - Transport Control
     
-    func play() {
+    public func play() {
         player.play()
     }
 
-    func seek() {
+    public func seek() {
         player.play()
     }
 
-    func pause() {
+    public func pause() {
         player.pause()
     }
     
-    func togglePlayback() {
+    public func togglePlayback() {
         player.timeControlStatus == .paused ? play() : pause()
     }
     
-    func mute(muted: Bool = true) {
+    public func mute(muted: Bool = true) {
         player.isMuted = muted
     }
     

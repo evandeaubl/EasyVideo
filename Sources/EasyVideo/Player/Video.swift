@@ -8,8 +8,8 @@
 import Foundation
 import CoreMedia
 
-class Video: Identifiable {
-    let id = 3496
+public class Video: Identifiable {
+    public let id = 3496
     let url: URL
     let name = "foo"
     let duration = 60
@@ -20,16 +20,16 @@ class Video: Identifiable {
     let contentRating = "XXX"
     let genres: [Genre] = [Genre()]
     
-    init(url: URL) {
+    public init(url: URL) {
         self.url = url
     }
 }
 
-class Genre {
+public class Genre {
     let name = "foo"
 }
 
-extension Video {
+public extension Video {
     var formattedDuration: String {
         Duration.seconds(duration)
             .formatted(.time(pattern: .minuteSecond(padMinuteToLength: 2)))

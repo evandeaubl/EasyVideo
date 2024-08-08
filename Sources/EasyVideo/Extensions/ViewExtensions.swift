@@ -16,7 +16,7 @@ extension View {
     }*/
 #endif
     // Only used in iOS and tvOS for full-window modal presentation.
-    func presentVideoPlayer() -> some View {
+    public func presentVideoPlayer() -> some View {
 #if os(macOS)
         self.modifier(OpenVideoPlayerModifier())
 #elseif os(visionOS)
