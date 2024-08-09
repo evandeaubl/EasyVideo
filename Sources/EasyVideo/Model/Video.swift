@@ -9,7 +9,7 @@ import Foundation
 import CoreMedia
 
 public class Video: Identifiable {
-    public let id = 3496
+    public let id = "3496"
     let url: URL
     let title: String?
     let duration = 60
@@ -17,7 +17,7 @@ public class Video: Identifiable {
     let yearOfRelease = 2023
     let imageName = "foo"
     let synopsis = "foo"
-    let contentRating = "XXX"
+    let contentRating = "foo"
     let genres: [Genre] = [Genre()]
     
     public init(url: URL, title: String? = nil) {
