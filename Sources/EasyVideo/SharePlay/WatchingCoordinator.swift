@@ -15,7 +15,8 @@ import GroupActivities
     
     private weak var coordinator: AVPlayerPlaybackCoordinator?
     private var coordinatorDelegate: PlaybackCoordinatorDelegate?
-
+    private var videoResolver: VideoResolver?
+    
     private var liveSession: WatchingSession? {
         didSet {
             guard let liveSession else { return }
@@ -33,8 +34,9 @@ import GroupActivities
         }
     }
     
-    init(coordinator: AVPlayerPlaybackCoordinator) {
+    init(coordinator: AVPlayerPlaybackCoordinator, videoResolver: VideoResolver?) {
         self.coordinator = coordinator
+        self.videoResolver = videoResolver
         
         Task {
             observeSessions()
@@ -42,25 +44,19 @@ import GroupActivities
     }
     
     func coordinatePlaybackOfVideo(withID videoID: Video.ID) async {
-        return
-        
-        /*guard videoID != liveVideoID else { return }
+        guard videoID != liveVideoID else { return }
         
         do {
-            /*var descriptor = FetchDescriptor<Video>(predicate: #Predicate { $0.id == videoID })
-            descriptor.fetchLimit = 1
-            let results = try modelContext.fetch(descriptor)
+            let video = try await videoResolver?.resolveVideo(withID: videoID)
             
-            guard let video = results.first else {
-                logger.debug("Unable to fetch video with id \(videoID)")
+            guard let video = video else {
+                liveVideoID = nil
                 return
-            }*/
-            
-            let video = Video()
+            }
             
             let activity = WatchingActivity(
-                title: video.name,
-                previewImageName: video.landscapeImageName,
+                title: video.title ?? "",
+                previewImageName: video.imageName ?? "",
                 fallbackURL: video.hasRemoteMedia ? video.resolvedURL : nil,
                 videoID: video.id
             )
@@ -81,7 +77,7 @@ import GroupActivities
             }
         } catch {
             //logger.debug("\(error.localizedDescription)")
-        }*/
+        }
     }
 }
 

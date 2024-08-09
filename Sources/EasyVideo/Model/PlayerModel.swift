@@ -16,6 +16,10 @@ public enum Presentation {
     case fullWindow
 }
 
+public protocol VideoResolver {
+    func resolveVideo(withID videoID: Video.ID) async -> Video?
+}
+
 /// A model object that manages the playback of video.
 @MainActor @Observable public class PlayerModel {
     
@@ -54,6 +58,8 @@ public enum Presentation {
     
     public private(set) var shouldAutoPlay = true
     
+    private(set) var videoResolver: VideoResolver?
+    
     /// An object that manages the app's SharePlay implementation.
     private var coordinator: WatchingCoordinator
     
@@ -62,13 +68,15 @@ public enum Presentation {
     
     private var playerObservationToken: NSKeyValueObservation?
     
-    public init() {
+    public init(videoResolver: VideoResolver? = nil) {
         let player = AVQueuePlayer()
         
         self.coordinator = WatchingCoordinator(
-            coordinator: player.playbackCoordinator
+            coordinator: player.playbackCoordinator,
+            videoResolver: videoResolver
         )
         self.player = player
+        self.videoResolver = videoResolver
         
         observePlayback()
         observeSharedVideo()
@@ -196,33 +204,14 @@ public enum Presentation {
         Task {
             for await _ in NotificationCenter.default.notifications(named: .liveVideoDidChange) {
                 guard let liveVideoID = coordinator.liveVideoID,
-                      liveVideoID != currentItem?.id
+                      liveVideoID != currentItem?.id,
+                      let videoResolver = videoResolver
                 else { continue }
-                loadVideo(withID: liveVideoID, presentation: .fullWindow)
+                let video = await videoResolver.resolveVideo(withID: liveVideoID)
+                if let video = video {
+                    loadVideo(video, presentation: .fullWindow)
+                }
             }
-        }
-    }
-    
-    private func loadVideo(
-        withID videoID: Video.ID,
-        presentation: Presentation = .inline,
-        autoplay: Bool = true
-    ) {
-        do {
-            /*var descriptor = FetchDescriptor<Video>(predicate: #Predicate { $0.id == videoID })
-            descriptor.fetchLimit = 1
-            let results = try modelContext.fetch(descriptor)
-            
-            guard let video = results.first else {
-                //logger.debug("Unable to fetch video with id \(videoID)")
-                return
-            }*/
-            
-            //let video = Video()
-            
-            //loadVideo(video, presentation: presentation)
-        } catch {
-            //logger.debug("\(error.localizedDescription)")
         }
     }
     

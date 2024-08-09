@@ -8,7 +8,7 @@
 import Foundation
 import CoreMedia
 
-public class Video: Identifiable {
+final public class Video: Identifiable, Sendable {
     public let id: String
     let url: URL
     let title: String?
@@ -34,7 +34,7 @@ public class Video: Identifiable {
     }
 }
 
-public class Genre {
+final public class Genre: Sendable {
     let name: String
     
     public init(name: String) {
