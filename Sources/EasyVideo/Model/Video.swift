@@ -9,10 +9,10 @@ import Foundation
 import CoreMedia
 
 public class Video: Identifiable {
-    public let id = "3496"
+    public let id: String
     let url: URL
     let title: String?
-    let duration = 60
+    let duration: Int?
     let startTime: CMTimeValue = 0
     let yearOfRelease = 2023
     let imageName = "foo"
@@ -20,9 +20,11 @@ public class Video: Identifiable {
     let contentRating = "foo"
     let genres: [Genre] = [Genre()]
     
-    public init(url: URL, title: String? = nil) {
+    public init(id: String, url: URL, title: String? = nil, duration: Int? = nil) {
+        self.id = id
         self.url = url
         self.title = title
+        self.duration = duration
     }
 }
 
@@ -32,7 +34,7 @@ public class Genre {
 
 public extension Video {
     var formattedDuration: String {
-        Duration.seconds(duration)
+        Duration.seconds(duration ?? 0)
             .formatted(.time(pattern: .minuteSecond(padMinuteToLength: 2)))
     }
     
