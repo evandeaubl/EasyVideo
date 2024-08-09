@@ -13,23 +13,33 @@ public class Video: Identifiable {
     let url: URL
     let title: String?
     let duration: Int?
-    let startTime: CMTimeValue = 0
-    let yearOfRelease = 2023
-    let imageName = "foo"
-    let synopsis = "foo"
-    let contentRating = "foo"
-    let genres: [Genre] = [Genre()]
+    let startTime: CMTimeValue
+    let yearOfRelease: Int?
+    let imageName: String?
+    let synopsis: String?
+    let contentRating: String?
+    let genres: [Genre]
     
-    public init(id: String, url: URL, title: String? = nil, duration: Int? = nil) {
+    public init(id: String, url: URL, title: String? = nil, duration: Int? = nil, startTime: Int64 = 0, yearOfRelease: Int? = nil, imageName: String? = nil, synopsis: String? = nil, contentRating: String? = nil, genres: [Genre] = []) {
         self.id = id
         self.url = url
         self.title = title
         self.duration = duration
+        self.startTime = startTime
+        self.yearOfRelease = yearOfRelease
+        self.imageName = imageName
+        self.synopsis = synopsis
+        self.contentRating = contentRating
+        self.genres = genres
     }
 }
 
 public class Genre {
-    let name = "foo"
+    let name: String
+    
+    public init(name: String) {
+        self.name = name
+    }
 }
 
 public extension Video {
@@ -38,8 +48,8 @@ public extension Video {
             .formatted(.time(pattern: .minuteSecond(padMinuteToLength: 2)))
     }
     
-    var formattedYearOfRelease: String {
-        yearOfRelease
+    var formattedYearOfRelease: String? {
+        yearOfRelease?
             .formatted(.number.grouping(.never))
     }
     
@@ -56,11 +66,11 @@ public extension Video {
     }
     
     var localizedSynopsis: String {
-        String(localized: LocalizedStringResource(stringLiteral: self.synopsis))
+        String(localized: LocalizedStringResource(stringLiteral: self.synopsis ?? ""))
     }
     
     var localizedContentRating: String {
-        String(localized: LocalizedStringResource(stringLiteral: self.contentRating))
+        String(localized: LocalizedStringResource(stringLiteral: self.contentRating ?? ""))
     }
     
     /// A url that resolves to specific local or remote media.
@@ -84,15 +94,4 @@ public extension Video {
     var imageData: Data {
         PlatformImage(named: landscapeImageName)?.imageData ?? Data()
     }
-    
-    /*func toggleUpNext(in context: ModelContext) {
-        if let upNextItem {
-            context.delete(upNextItem)
-            self.upNextItem = nil
-        } else {
-            let item = UpNextItem(video: self)
-            context.insert(item)
-            self.upNextItem = item
-        }
-    }*/
 }
