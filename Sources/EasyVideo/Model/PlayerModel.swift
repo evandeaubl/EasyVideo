@@ -292,7 +292,7 @@ public enum Presentation {
     /// - Parameter video: the video to create metadata for.
     /// - Returns: An array of `AVMetadataItem` to set on a player item.
     private func createMetadataItems(for video: Video) -> [AVMetadataItem] {
-        let mapping: [AVMetadataIdentifier: Any] = [
+        let mapping: [AVMetadataIdentifier: Any?] = [
             .commonIdentifierTitle: video.localizedName,
             .commonIdentifierArtwork: video.imageData,
             .commonIdentifierDescription: video.localizedSynopsis,
@@ -309,7 +309,11 @@ public enum Presentation {
     ///   - value: a value to associate with the item.
     /// - Returns: a new `AVMetadataItem` object.
     private func createMetadataItem(for identifier: AVMetadataIdentifier,
-                                    value: Any) -> AVMetadataItem {
+                                    value: Any?) -> AVMetadataItem? {
+        guard let value = value else {
+            return nil
+        }
+        
         let item = AVMutableMetadataItem()
         item.identifier = identifier
         item.value = value as? NSCopying & NSObjectProtocol
