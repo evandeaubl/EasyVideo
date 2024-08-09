@@ -52,7 +52,7 @@ public enum Presentation {
     private var playerUI: AnyObject? = nil
     private var playerUIDelegate: AnyObject? = nil
     
-    private(set) var shouldAutoPlay = true
+    public private(set) var shouldAutoPlay = true
     
     /// An object that manages the app's SharePlay implementation.
     private var coordinator: WatchingCoordinator

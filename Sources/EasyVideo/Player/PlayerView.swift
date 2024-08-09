@@ -55,10 +55,15 @@ public struct PlayerView: View {
                         showContextualActions = newValue
                     }
                 }
+        #if !os(macOS)
         case .custom:
             InlinePlayerView()
         case .none:
             InlinePlayerView(showControls: false)
+        #else
+        default:
+            fatalError("Unsupported player controls style: \(controlsStyle)")
+        #endif
         }
     }
 }
