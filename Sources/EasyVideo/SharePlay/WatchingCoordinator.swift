@@ -144,6 +144,10 @@ extension WatchingCoordinator {
         liveSession = nil
         observers.forEach { $0.cancel() }
         observers = []
+        NotificationCenter.default.post(
+            name: .liveSessionDidEnd,
+            object: nil
+        )
     }
 }
 
@@ -166,5 +170,6 @@ extension WatchingCoordinator {
 
 extension Notification.Name {
     static let liveVideoDidChange = Notification.Name("liveVideoDidChange")
+    static let liveSessionDidEnd = Notification.Name("liveSessionDidEnd")
 }
 

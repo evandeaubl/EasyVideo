@@ -213,6 +213,12 @@ public protocol VideoResolver {
                 }
             }
         }
+        
+        Task {
+            for await _ in NotificationCenter.default.notifications(named: .liveSessionDidEnd) {
+                reset()
+            }
+        }
     }
     
     /// Loads a video for playback in the requested presentation.
