@@ -291,7 +291,7 @@ public protocol VideoResolver {
             .commonIdentifierTitle: video.localizedName,
             .commonIdentifierArtwork: video.imageData,
             .commonIdentifierDescription: video.localizedSynopsis,
-            .commonIdentifierCreationDate: video.yearOfRelease,
+            .commonIdentifierCreationDate: video.yearOfRelease ?? "",
             .iTunesMetadataContentRating: video.localizedContentRating,
             .quickTimeMetadataGenre: video.genres.map(\.name)
         ]
