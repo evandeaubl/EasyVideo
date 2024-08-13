@@ -35,9 +35,6 @@ public protocol VideoResolver {
     /// The currently loaded video.
     private(set) var currentItem: Video? = nil
     
-    /// A Boolean value that indicates whether the player should propose playing the next video in the Up Next list.
-    private(set) var shouldProposeNextVideo = false
-    
     /// An object that manages the playback of a video's media.
     private var player: AVQueuePlayer
     
@@ -176,11 +173,6 @@ public protocol VideoResolver {
             }
         }
         #endif
-        
-        // Add an observer of the player object's current time. The app observes
-        // the player's current time to determine when to propose playing the next
-        // video in the Up Next list.
-        addTimeObserver()
     }
     
     /// Configures the audio session for video playback.
@@ -358,29 +350,5 @@ public protocol VideoResolver {
     
     public func mute(muted: Bool = true) {
         player.isMuted = muted
-    }
-    
-    // MARK: - Time Observation
-    private func addTimeObserver() {
-        removeTimeObserver()
-        // Observe the player's timing once every second.
-        let timeInterval = CMTime(value: 1, timescale: 1)
-        timeObserver = player
-            .addPeriodicTimeObserver(forInterval: timeInterval, queue: .main) { time in
-                Task { @MainActor in
-                    if let duration = self.player.currentItem?.duration {
-                        let isInProposalRange = time.seconds >= duration.seconds - 10.0
-                        if self.shouldProposeNextVideo != isInProposalRange {
-                            self.shouldProposeNextVideo = isInProposalRange
-                        }
-                    }
-                }
-            }
-    }
-    
-    private func removeTimeObserver() {
-        guard let timeObserver = timeObserver else { return }
-        player.removeTimeObserver(timeObserver)
-        self.timeObserver = nil
     }
 }
