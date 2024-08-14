@@ -158,6 +158,9 @@ public protocol VideoResolver {
         Task {
             for await _ in center.notifications(named: .AVPlayerItemDidPlayToEndTime) {
                 isPlaybackComplete = true
+                if looper == nil {
+                    reset()
+                }
             }
         }
         
