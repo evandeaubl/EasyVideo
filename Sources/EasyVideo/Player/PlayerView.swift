@@ -50,11 +50,6 @@ public struct PlayerView: View {
         switch controlsStyle {
         case .system:
             systemPlayerView
-                .onChange(of: model.shouldProposeNextVideo) { oldValue, newValue in
-                    if oldValue != newValue {
-                        showContextualActions = newValue
-                    }
-                }
         #if !os(macOS)
         case .custom:
             InlinePlayerView()
