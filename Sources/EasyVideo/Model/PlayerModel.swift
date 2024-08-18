@@ -16,6 +16,12 @@ public enum Presentation {
     case fullWindow
 }
 
+public enum PlayerState {
+    case paused
+    case playing
+    case buffering
+}
+
 public protocol VideoResolver {
     func resolveVideo(withID videoID: Video.ID) async -> Video?
 }
@@ -64,6 +70,8 @@ public protocol VideoResolver {
     private var timeObserver: Any? = nil
     
     private var playerObservationToken: NSKeyValueObservation?
+    
+    private var userPlayerObservationToken: NSKeyValueObservation?
     
     public init(videoResolver: VideoResolver? = nil) {
         let player = AVQueuePlayer()
@@ -272,12 +280,55 @@ public protocol VideoResolver {
         player.replaceCurrentItem(with: nil)
         playerUI = nil
         playerUIDelegate = nil
+        removeTimeObserver()
+        removeStateObserver()
         // Reset the presentation state on the next cycle of the run loop.
         Task {
             presentation = .inline
         }
     }
     
+    public func setStateObserver(_ stateObserver: @Sendable @escaping (PlayerState) -> Void) {
+        removeStateObserver()
+        userPlayerObservationToken = player.observe(\.timeControlStatus) { observed, _ in
+            let translatedState: PlayerState
+            switch (observed.timeControlStatus) {
+            case .paused:
+                translatedState = .paused
+            case .playing:
+                translatedState = .playing
+            case .waitingToPlayAtSpecifiedRate:
+                translatedState = .buffering
+            @unknown default:
+                fatalError()
+            }
+            stateObserver(translatedState)
+        }
+    }
+    
+    public func removeStateObserver() {
+        guard let userPlayerObservationToken = userPlayerObservationToken else {
+            return
+        }
+        self.userPlayerObservationToken = nil
+    }
+    
+    public func setTimeObserver(_ timeObserver: @Sendable @escaping (Double) -> Void) {
+        removeTimeObserver()
+        let timeInterval = CMTime(value: 1, timescale: 1)
+        self.timeObserver = player
+            .addPeriodicTimeObserver(forInterval: timeInterval, queue: .main) { time in
+                timeObserver(time.seconds)
+            }
+    }
+    
+    public func removeTimeObserver() {
+        guard let timeObserver = timeObserver else {
+            return
+        }
+        player.removeTimeObserver(timeObserver)
+        self.timeObserver = nil
+    }
     /// Creates metadata items from the video items data.
     /// - Parameter video: the video to create metadata for.
     /// - Returns: An array of `AVMetadataItem` to set on a player item.
