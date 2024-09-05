@@ -61,6 +61,19 @@ public protocol VideoResolver {
     
     public private(set) var shouldAutoPlay = true
     
+    public var state: PlayerState {
+        switch (player.timeControlStatus) {
+        case .paused:
+            return .paused
+        case .playing:
+            return .playing
+        case .waitingToPlayAtSpecifiedRate:
+            return .buffering
+        @unknown default:
+            fatalError()
+        }
+    }
+    
     private(set) var videoResolver: VideoResolver?
     
     /// An object that manages the app's SharePlay implementation.
