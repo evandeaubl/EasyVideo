@@ -9,14 +9,14 @@ import AVKit
 import GroupActivities
 
 /// The presentation modes the player supports.
-public enum Presentation {
+public enum Presentation: Sendable {
     /// Presents the player as a child of a parent user interface.
     case inline
     /// Presents the player in full-window exclusive mode.
     case fullWindow
 }
 
-public enum PlayerState {
+public enum PlayerState: Sendable {
     case inactive
     case paused
     case playing
